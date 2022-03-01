@@ -4,13 +4,12 @@ const app = express();
 
 const server = require('http').Server(app);
 
-//Web Socket connection
+// Socket.io Connection
 const io = require('socket.io')(server);
-let onlineUsers = {};
-let channels = { 'General': [] };
-// io.on('connection', (socket) => {
-//   require('./sockets/chat.js')(io, socket, onlineUsers, channels);
-// });
+io.on("connection", (socket) => {
+  // This file will be read on new socket connections
+  require('./sockets/chat.js')(io, socket);
+})
 
 const exphbs = require('express-handlebars');
 // Use "exphbs.engine" instead of "exphbs"
@@ -20,7 +19,6 @@ app.engine('handlebars', exphbs.engine({
 }));
 
 app.set('view engine', 'handlebars');
-
 app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
